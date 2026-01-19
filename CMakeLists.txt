@@ -11,12 +11,19 @@ find_package(CURL REQUIRED)
 
 add_executable(TelegramWeatherBot 
   src/main.cpp
+  src/utils/signal_handler.cpp
 )
 
 target_include_directories(TelegramWeatherBot PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/
 )
 
 target_link_libraries(TelegramWeatherBot PRIVATE
   CURL::libcurl
+)
+
+install(
+  TARGETS TelegramWeatherBot
+  RUNTIME DESTINATION bin
 )
