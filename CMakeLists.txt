@@ -8,21 +8,25 @@ set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(CURL REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 add_executable(TelegramWeatherBot 
   src/main.cpp
   src/utils/signal_handler.cpp
   src/http/http_client.cpp
+  src/config/config.cpp
 )
 
 target_include_directories(TelegramWeatherBot PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/config/
   ${CMAKE_CURRENT_SOURCE_DIR}/src/http/
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/
 )
 
 target_link_libraries(TelegramWeatherBot PRIVATE
   CURL::libcurl
+  nlohmann_json::nlohmann_json
 )
 
 install(

@@ -1,4 +1,5 @@
-#include "http_client.hpp"
+#include "config/config.hpp"
+#include "http/http_client.hpp"
 #include "utils/signal_handler.hpp"
 
 #include <chrono>
@@ -7,13 +8,18 @@
 
 int main(int argc, char* argv[])
 {
-    http::HttpClient client;
-
-    auto response = client.get("https://www.google.com/get", {{"Accept", "application/json"}});
-
-    std::cout << "status: " << response.status << "\n";
-    std::cout << "body:\n"
-              << response.body << "\n";
+    config::Config bot_config("bot_config.json");
+    if (bot_config.load())
+        std::cout << "is load\n";
+    else
+        std::cout << "is not load\n";
+    // http::HttpClient client;
+    //
+    // auto response = client.get("https://www.google.com/", {{"Accept", "html"}});
+    //
+    // std::cout << "status: " << response.status << "\n";
+    // std::cout << "body:\n"
+    //           << response.body << "\n";
     // utils::SignalHandler::setup();
     //
     // std::cout << "TelegramWeatherBot started\n";
