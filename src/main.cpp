@@ -1,5 +1,4 @@
 #include "config/config.hpp"
-#include "http/http_client.hpp"
 #include "utils/signal_handler.hpp"
 
 #include <chrono>
@@ -13,9 +12,6 @@ int main(int argc, char* argv[])
         std::cout << "is load\n";
     else
         std::cout << "is not load\n";
-    // http::HttpClient client;
-    //
-    // auto response = client.get("https://www.google.com/", {{"Accept", "html"}});
     //
     // std::cout << "status: " << response.status << "\n";
     // std::cout << "body:\n"
