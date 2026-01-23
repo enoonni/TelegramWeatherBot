@@ -15,6 +15,7 @@ add_executable(TelegramWeatherBot
   src/utils/signal_handler.cpp
   src/http/http_client.cpp
   src/config/config.cpp
+  src/telegram_bot/telegram_bot.cpp
 )
 
 target_include_directories(TelegramWeatherBot PRIVATE
@@ -22,6 +23,8 @@ target_include_directories(TelegramWeatherBot PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/config/
   ${CMAKE_CURRENT_SOURCE_DIR}/src/http/
   ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/telegram_bot/
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/telegram_bot/dto/
 )
 
 target_link_libraries(TelegramWeatherBot PRIVATE

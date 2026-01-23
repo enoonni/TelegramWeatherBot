@@ -1,4 +1,6 @@
 #include "telegram_bot.hpp"
+#include "message_context.hpp"
+#include <vector>
 
 namespace telegram_bot
 {
@@ -9,6 +11,12 @@ namespace telegram_bot
 //
 class TelegramBot::TelegramClientApi
 {
+  public:
+    std::vector<dto::MessageContext> Update();
+
+  private:
+    std::vector<dto::MessageContext> message_queue_;
+    int64_t last_update_id_ = 0;
 };
 
 enum class TelegramBot::TelegramBotState
