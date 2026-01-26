@@ -1,4 +1,5 @@
 #include "config/config.hpp"
+#include "telegram_client_api.hpp"
 #include "utils/signal_handler.hpp"
 
 #include <chrono>
@@ -9,9 +10,21 @@ int main(int argc, char* argv[])
 {
     config::Config bot_config("bot_config.json");
     if (bot_config.load())
+    {
         std::cout << "is load\n";
+    }
     else
+    {
         std::cout << "is not load\n";
+        return 0;
+    }
+
+    telegram_bot::telegram_client_api::TelegramClientApi client;
+    auto updates = client.Update(bot_config.GetToken());
+    if (updates.size() < 1)
+        std::cout << "empty";
+    else
+        std::cout << "is not empty";
     //
     // std::cout << "status: " << response.status << "\n";
     // std::cout << "body:\n"

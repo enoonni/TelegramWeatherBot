@@ -1,23 +1,8 @@
 #include "telegram_bot.hpp"
-#include "message_context.hpp"
-#include <vector>
+#include "telegram_client_api.hpp"
 
 namespace telegram_bot
 {
-
-// http::HttpClient client;
-//
-// auto response = client.get("https://www.google.com/", {{"Accept", "html"}});
-//
-class TelegramBot::TelegramClientApi
-{
-  public:
-    std::vector<dto::MessageContext> Update();
-
-  private:
-    std::vector<dto::MessageContext> message_queue_;
-    int64_t last_update_id_ = 0;
-};
 
 enum class TelegramBot::TelegramBotState
 {
@@ -25,7 +10,7 @@ enum class TelegramBot::TelegramBotState
     Processing
 };
 
-TelegramBot::TelegramBot(std::string& token)
+TelegramBot::TelegramBot(std::string token)
 {
     this->token_ = token;
     this->state_ = TelegramBot::TelegramBotState::Initialize;

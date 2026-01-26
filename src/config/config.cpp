@@ -45,4 +45,9 @@ bool Config::load()
 
     return true;
 }
+
+const std::string& Config::GetToken() const
+{
+    return token_;
+}
 } // namespace config

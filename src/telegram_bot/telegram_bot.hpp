@@ -6,7 +6,7 @@ namespace telegram_bot
 class TelegramBot
 {
   public:
-    explicit TelegramBot(std::string& token);
+    explicit TelegramBot(std::string token);
     void Poll();
 
   private:
