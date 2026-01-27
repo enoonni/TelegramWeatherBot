@@ -1,5 +1,4 @@
 #include "telegram_bot.hpp"
-#include "telegram_client_api.hpp"
 
 namespace telegram_bot
 {

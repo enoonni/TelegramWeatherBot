@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(CURL REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 add_executable(TelegramWeatherBot 
   src/main.cpp
@@ -21,17 +22,13 @@ add_executable(TelegramWeatherBot
 
 target_include_directories(TelegramWeatherBot PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/config/
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/http/
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/telegram_bot/
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/telegram_bot/dto/
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/telegram_bot/telegram_client_api/
+  ${SQLite3_INCLUDE_DIRS}
 )
 
 target_link_libraries(TelegramWeatherBot PRIVATE
   CURL::libcurl
   nlohmann_json::nlohmann_json
+  ${SQLite3_LIBRARIES}
 )
 
 install(
