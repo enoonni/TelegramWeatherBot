@@ -1,4 +1,5 @@
 #include "config/config.hpp"
+#include "telegram_bot/telegram_bot.hpp"
 #include "telegram_bot/telegram_client_api/telegram_client_api.hpp"
 #include "utils/signal_handler.hpp"
 
@@ -6,25 +7,33 @@
 #include <iostream>
 #include <thread>
 
+enum class App_State
+{
+    Initialize,
+    Ready
+};
+
 int main(int argc, char* argv[])
 {
-    config::Config bot_config("bot_config.json");
-    if (bot_config.load())
-    {
-        std::cout << "is load\n";
-    }
-    else
+
+    const std::string path = "bot_config.json";
+    config::Config bot_config(path);
+
+    if (!bot_config.load())
     {
         std::cout << "is not load\n";
         return 0;
     }
 
-    telegram_bot::telegram_client_api::TelegramClientApi client;
-    auto updates = client.Update(bot_config.GetToken());
-    if (updates.size() < 1)
-        std::cout << "empty";
-    else
-        std::cout << updates[0].message_id << "\n";
+    std::cout << "is load\n";
+    int timeout = 1000;
+    telegram_bot::TelegramBot bot(bot_config.GetToken());
+
+    while (timeout--)
+    {
+        bot.Poll();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
     //
     // std::cout << "status: " << response.status << "\n";
     // std::cout << "body:\n"
