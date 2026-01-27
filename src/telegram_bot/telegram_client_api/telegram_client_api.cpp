@@ -1,6 +1,6 @@
 #include "telegram_client_api.hpp"
-#include "http_client.hpp"
-#include "message_context.hpp"
+#include "http/http_client.hpp"
+#include "telegram_bot/dto/message_context.hpp"
 
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -24,6 +24,9 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
 
     std::vector<telegram_bot::dto::MessageContext> updates;
 
+    if (!json.contains("result") || !json["result"].is_array())
+        return {};
+
     for (const auto& update : json["result"])
     {
         if (!update.contains("message"))
@@ -33,8 +36,11 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
 
         telegram_bot::dto::MessageContext context;
         context.update_id = update["update_id"];
-        context.message_id = update["message_id"];
-        context.timestamp = update["date"];
+        context.message_id = message["message_id"];
+        context.timestamp = message["date"];
+
+        if (!message.contains("from") || !message.contains("chat"))
+            continue;
 
         const auto& from = message["from"];
         context.from.id = from["id"];

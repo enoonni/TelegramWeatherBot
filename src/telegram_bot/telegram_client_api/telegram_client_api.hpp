@@ -1,5 +1,5 @@
 #pragma once
-#include "message_context.hpp"
+#include "telegram_bot/dto/message_context.hpp"
 #include <vector>
 
 namespace telegram_bot::telegram_client_api

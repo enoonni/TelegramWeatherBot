@@ -1,5 +1,5 @@
 #include "config/config.hpp"
-#include "telegram_client_api.hpp"
+#include "telegram_bot/telegram_client_api/telegram_client_api.hpp"
 #include "utils/signal_handler.hpp"
 
 #include <chrono>
@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     if (updates.size() < 1)
         std::cout << "empty";
     else
-        std::cout << "is not empty";
+        std::cout << updates[0].message_id << "\n";
     //
     // std::cout << "status: " << response.status << "\n";
     // std::cout << "body:\n"
