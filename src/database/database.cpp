@@ -1,74 +1,97 @@
 #include "database.hpp"
 #include "sqlite/sqlite.hpp"
-#include <filesystem>
+#include <cstdint>
 #include <sqlite3.h>
+#include <string>
+#include <vector>
 
 namespace db
 {
-bool Database::Initialize(std::string path)
+
+bool Database::Initialize(const std::string& path)
 {
     this->path_ = path;
+    sqlite::Sqlite sqlite;
 
-    sqlite3* db = nullptr;
-
-    int rc = sqlite3_open(this->path_.c_str(), &db);
-    if (rc != SQLITE_OK || !db)
+    if (!sqlite.Open(this->path_))
     {
-        if (db)
-            sqlite3_close(db);
-
+        sqlite.Close();
         return false;
     }
 
-    const char* check_and_create_table_request = R"(CREATE TABLE IF NOT EXISTS telegram_users(
-                                                      id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                      user_id INTEGER NOT NULL UNIQUE
-                                                    );
-                                                  )";
-
-    rc = sqlite3_exec(db, check_and_create_table_request, nullptr, nullptr, nullptr);
-    if (rc != SQLITE_OK)
+    if (!sqlite.EnsureTable(this->user_table_name_, this->user_table_schema))
     {
-        sqlite3_close(db);
+        sqlite.Close();
         return false;
     }
 
-    const char* pragma_sql = "PRAGMA table_info(telegram_users);";
-    sqlite3_stmt* stmt = nullptr;
-
-    rc = sqlite3_prepare_v2(db, pragma_sql, -1, &stmt, nullptr);
-    if (rc != SQLITE_OK)
+    if (!sqlite.HasColumn(this->user_table_name_, this->user_id_column_name_))
     {
-        sqlite3_close(db);
-    }
-
-    bool has_user_id = false;
-    while (sqlite3_step(stmt) == SQLITE_ROW)
-    {
-        const char* col_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-
-        if (col_name && std::string(col_name) == "user_id")
+        if (!sqlite.AddColumn(this->user_table_name_, this->user_id_column_name_ + " INTEGER NOT NULL UNIQUE"))
         {
-            has_user_id = true;
-            break;
-        }
-    }
-
-    sqlite3_finalize(stmt);
-
-    if (!has_user_id)
-    {
-        const char* alter_request = "ALTER TABLE telegram_users ADD COLUMN user_id INTEGER NOT NULL UNIQUE;";
-        rc = sqlite3_exec(db, alter_request, nullptr, nullptr, nullptr);
-        if (rc != SQLITE_OK)
-        {
-            sqlite3_close(db);
+            sqlite.Close();
             return false;
         }
     }
-
-    sqlite3_close(db);
+    sqlite.Close();
     return true;
+}
+
+void Database::AddUser(int64_t user_id)
+{
+    sqlite::Sqlite sqlite;
+
+    if (!sqlite.Open(this->path_))
+    {
+        sqlite.Close();
+        return;
+    }
+
+    std::string sql_request = "INSERT OR IGNORE INTO " + this->user_table_name_ + " (" + this->user_id_column_name_ + ") VALUES (" + std::to_string(user_id) + ");";
+
+    sqlite.Exec(sql_request);
+    sqlite.Close();
+}
+
+void Database::AddUsers(std::vector<int64_t> users_id)
+{
+    sqlite::Sqlite sqlite;
+
+    if (!sqlite.Open(this->path_) || users_id.size() == 0)
+    {
+        sqlite.Close();
+        return;
+    }
+
+    std::string sql_request = "INSERT OR IGNORE INTO " + this->user_table_name_ + " (" + this->user_id_column_name_ + ") VALUES ";
+
+    for (size_t i = 0; i < users_id.size(); i++)
+    {
+        sql_request += ("(" + std::to_string(users_id[i]) + ")");
+        if (i < users_id.size())
+            sql_request += ",";
+    }
+    sql_request += ";";
+    sqlite.Exec(sql_request);
+
+    sqlite.Close();
+}
+
+std::vector<int64_t> Database::GetUsers()
+{
+    std::vector<int64_t> result;
+    sqlite::Sqlite sqlite;
+
+    if (!sqlite.Open(this->path_))
+    {
+        sqlite.Close();
+        return result;
+    }
+
+    result = sqlite.GetDataInt64(this->user_table_name_, this->user_id_column_name_);
+
+    sqlite.Close();
+    return result;
 }
 
 } // namespace db
