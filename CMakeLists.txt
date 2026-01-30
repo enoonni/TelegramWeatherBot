@@ -18,6 +18,7 @@ add_executable(TelegramWeatherBot
   src/config/config.cpp
   src/telegram_bot/telegram_bot.cpp
   src/telegram_bot/telegram_client_api/telegram_client_api.cpp
+  src/weather_checker/weather_checker.cpp
 )
 
 target_include_directories(TelegramWeatherBot PRIVATE
