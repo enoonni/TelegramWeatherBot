@@ -6,8 +6,8 @@ namespace weatherchecker
 class WeatherChecker
 {
   public:
-    void Poll();
-    std::string GetWeather();
+    void poll();
+    std::string get_weather();
 
   private:
     std::string last_weather_;

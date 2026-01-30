@@ -7,10 +7,10 @@ namespace db
 class Database
 {
   public:
-    bool Initialize(const std::string& path);
-    void AddUser(int64_t user_id);
-    void AddUsers(std::vector<int64_t> users_id);
-    std::vector<int64_t> GetUsers();
+    bool initialize(const std::string& path);
+    void add_user(int64_t user_id);
+    void add_users(std::vector<int64_t> users_id);
+    std::vector<int64_t> get_users();
 
   private:
     std::string path_;

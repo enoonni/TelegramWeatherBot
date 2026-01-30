@@ -8,55 +8,55 @@
 namespace db
 {
 
-bool Database::Initialize(const std::string& path)
+bool Database::initialize(const std::string& path)
 {
     this->path_ = path;
     sqlite::Sqlite sqlite;
 
-    if (!sqlite.Open(this->path_))
+    if (!sqlite.open(this->path_))
         return false;
 
-    if (!sqlite.EnsureTable(this->user_table_name_, this->user_table_schema))
+    if (!sqlite.ensure_table(this->user_table_name_, this->user_table_schema))
     {
-        sqlite.Close();
+        sqlite.close();
         return false;
     }
 
-    if (!sqlite.HasColumn(this->user_table_name_, this->user_id_column_name_))
+    if (!sqlite.has_column(this->user_table_name_, this->user_id_column_name_))
     {
-        if (!sqlite.AddColumn(this->user_table_name_, this->user_id_column_name_ + " INTEGER NOT NULL UNIQUE"))
+        if (!sqlite.add_column(this->user_table_name_, this->user_id_column_name_ + " INTEGER NOT NULL UNIQUE"))
         {
-            sqlite.Close();
+            sqlite.close();
             return false;
         }
     }
-    sqlite.Close();
+    sqlite.close();
     return true;
 }
 
-void Database::AddUser(int64_t user_id)
+void Database::add_user(int64_t user_id)
 {
     sqlite::Sqlite sqlite;
 
-    if (!sqlite.Open(this->path_))
+    if (!sqlite.open(this->path_))
     {
-        sqlite.Close();
+        sqlite.close();
         return;
     }
 
     std::string sql_request = "INSERT OR IGNORE INTO " + this->user_table_name_ + " (" + this->user_id_column_name_ + ") VALUES (" + std::to_string(user_id) + ");";
 
-    sqlite.Exec(sql_request);
-    sqlite.Close();
+    sqlite.exec(sql_request);
+    sqlite.close();
 }
 
-void Database::AddUsers(std::vector<int64_t> users_id)
+void Database::add_users(std::vector<int64_t> users_id)
 {
     sqlite::Sqlite sqlite;
 
-    if (!sqlite.Open(this->path_) || users_id.size() == 0)
+    if (!sqlite.open(this->path_) || users_id.size() == 0)
     {
-        sqlite.Close();
+        sqlite.close();
         return;
     }
 
@@ -69,25 +69,25 @@ void Database::AddUsers(std::vector<int64_t> users_id)
             sql_request += ",";
     }
     sql_request += ";";
-    sqlite.Exec(sql_request);
+    sqlite.exec(sql_request);
 
-    sqlite.Close();
+    sqlite.close();
 }
 
-std::vector<int64_t> Database::GetUsers()
+std::vector<int64_t> Database::get_users()
 {
     std::vector<int64_t> result;
     sqlite::Sqlite sqlite;
 
-    if (!sqlite.Open(this->path_))
+    if (!sqlite.open(this->path_))
     {
-        sqlite.Close();
+        sqlite.close();
         return result;
     }
 
-    result = sqlite.GetDataInt64(this->user_table_name_, this->user_id_column_name_);
+    result = sqlite.get_data_int64(this->user_table_name_, this->user_id_column_name_);
 
-    sqlite.Close();
+    sqlite.close();
     return result;
 }
 

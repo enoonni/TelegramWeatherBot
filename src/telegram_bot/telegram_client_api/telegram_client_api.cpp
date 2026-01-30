@@ -6,10 +6,10 @@
 #include <stdexcept>
 #include <string>
 
-namespace telegram_bot::telegram_client_api
+namespace telegrambot::telegramclientapi
 {
 
-std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::string token)
+std::vector<telegrambot::dto::MessageContext> TelegramClientApi::Update(std::string token)
 {
     const std::string url = "https://api.telegram.org/bot" + token + "/getUpdates";
     http::HttpClient client;
@@ -23,7 +23,7 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
     if (!json.contains("ok") || !json["ok"].get<bool>())
         throw std::runtime_error("Telegram API json returned ok=false");
 
-    std::vector<telegram_bot::dto::MessageContext> updates;
+    std::vector<telegrambot::dto::MessageContext> updates;
 
     if (!json.contains("result") || !json["result"].is_array())
         return {};
@@ -35,7 +35,7 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
 
         const auto& message = update["message"];
 
-        telegram_bot::dto::MessageContext context;
+        telegrambot::dto::MessageContext context;
         context.update_id = update["update_id"];
         context.message_id = message["message_id"];
         context.timestamp = message["date"];
@@ -75,7 +75,7 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
     return updates;
 }
 
-std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::string token, int64_t offset)
+std::vector<telegrambot::dto::MessageContext> TelegramClientApi::Update(std::string token, int64_t offset)
 {
     const std::string url = "https://api.telegram.org/bot" + token + "/getUpdates?timeout=30&offset=" + std::to_string(offset);
     http::HttpClient client;
@@ -89,7 +89,7 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
     if (!json.contains("ok") || !json["ok"].get<bool>())
         throw std::runtime_error("Telegram API json returned ok=false");
 
-    std::vector<telegram_bot::dto::MessageContext> updates;
+    std::vector<telegrambot::dto::MessageContext> updates;
 
     if (!json.contains("result") || !json["result"].is_array())
         return {};
@@ -101,7 +101,7 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
 
         const auto& message = update["message"];
 
-        telegram_bot::dto::MessageContext context;
+        telegrambot::dto::MessageContext context;
         context.update_id = update["update_id"];
         context.message_id = message["message_id"];
         context.timestamp = message["date"];
@@ -140,4 +140,4 @@ std::vector<telegram_bot::dto::MessageContext> TelegramClientApi::Update(std::st
     return updates;
 }
 
-}; // namespace telegram_bot::telegram_client_api
+}; // namespace telegrambot::telegramclientapi

@@ -4,7 +4,7 @@
 
 namespace db::sqlite
 {
-bool Sqlite::Open(const std::string& path)
+bool Sqlite::open(const std::string& path)
 {
     if (this->db_)
         return true;
@@ -22,7 +22,7 @@ bool Sqlite::Open(const std::string& path)
     return true;
 }
 
-void Sqlite::Close()
+void Sqlite::close()
 {
     if (this->db_)
     {
@@ -31,7 +31,7 @@ void Sqlite::Close()
     }
 }
 
-bool Sqlite::Exec(const std::string& request_sql)
+bool Sqlite::exec(const std::string& request_sql)
 {
     if (!this->db_)
         return false;
@@ -43,7 +43,7 @@ bool Sqlite::Exec(const std::string& request_sql)
     return true;
 }
 
-bool Sqlite::EnsureTable(const std::string& name, const std::string& schema)
+bool Sqlite::ensure_table(const std::string& name, const std::string& schema)
 {
     if (!this->db_)
         return false;
@@ -57,7 +57,7 @@ bool Sqlite::EnsureTable(const std::string& name, const std::string& schema)
     return true;
 }
 
-bool Sqlite::HasColumn(const std::string& table, const std::string& column)
+bool Sqlite::has_column(const std::string& table, const std::string& column)
 {
     if (!this->db_)
         return false;
@@ -86,7 +86,7 @@ bool Sqlite::HasColumn(const std::string& table, const std::string& column)
     return found;
 }
 
-bool Sqlite::AddColumn(const std::string& table, const std::string& column_definition)
+bool Sqlite::add_column(const std::string& table, const std::string& column_definition)
 {
     if (!this->db_)
         return false;
@@ -100,7 +100,7 @@ bool Sqlite::AddColumn(const std::string& table, const std::string& column_defin
     return true;
 }
 
-std::vector<int64_t> Sqlite::GetDataInt64(const std::string& table, const std::string& column)
+std::vector<int64_t> Sqlite::get_data_int64(const std::string& table, const std::string& column)
 {
     std::vector<int64_t> result;
 

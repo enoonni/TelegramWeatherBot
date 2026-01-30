@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <string>
 
-namespace telegram_bot::dto
+namespace telegrambot::dto
 {
 struct User
 {
@@ -41,4 +41,4 @@ struct MessageContext
     std::string payload;
     int64_t timestamp;
 };
-} // namespace telegram_bot::dto
+} // namespace telegrambot::dto

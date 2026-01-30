@@ -1,13 +1,12 @@
 #include "weather_checker.hpp"
 #include "http/http_client.hpp"
-#include <cstddef>
 #include <exception>
 #include <nlohmann/json.hpp>
 #include <string>
 
 namespace weatherchecker
 {
-void WeatherChecker::Poll()
+void WeatherChecker::poll()
 {
     try
     {
@@ -38,7 +37,7 @@ void WeatherChecker::Poll()
     }
 }
 
-std::string WeatherChecker::GetWeather()
+std::string WeatherChecker::get_weather()
 {
     return this->last_weather_;
 }

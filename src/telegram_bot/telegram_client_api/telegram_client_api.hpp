@@ -3,14 +3,14 @@
 #include <cstdint>
 #include <vector>
 
-namespace telegram_bot::telegram_client_api
+namespace telegrambot::telegramclientapi
 {
 class TelegramClientApi
 {
   public:
-    std::vector<telegram_bot::dto::MessageContext> Update(std::string token);
-    std::vector<telegram_bot::dto::MessageContext> Update(std::string token, int64_t offset);
+    std::vector<telegrambot::dto::MessageContext> Update(std::string token);
+    std::vector<telegrambot::dto::MessageContext> Update(std::string token, int64_t offset);
 
   private:
 };
-} // namespace telegram_bot::telegram_client_api
+} // namespace telegrambot::telegramclientapi

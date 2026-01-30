@@ -17,8 +17,8 @@ enum class App_State
 int main(int argc, char* argv[])
 {
     weatherchecker::WeatherChecker checker;
-    checker.Poll();
-    std::string current_weather = checker.GetWeather();
+    checker.poll();
+    std::string current_weather = checker.get_weather();
     std::cout << current_weather << "\n";
     // const std::string path = "bot_config.json";
     // config::Config bot_config(path);

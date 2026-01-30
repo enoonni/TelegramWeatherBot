@@ -1,7 +1,7 @@
 #include "telegram_bot.hpp"
 #include <iostream>
 
-namespace telegram_bot
+namespace telegrambot
 {
 
 enum class TelegramBot::TelegramBotState
@@ -16,7 +16,7 @@ TelegramBot::TelegramBot(std::string token)
     this->state_ = TelegramBot::TelegramBotState::Initialize;
 }
 
-void TelegramBot::Poll()
+void TelegramBot::poll()
 {
     switch (this->state_)
     {
@@ -55,4 +55,4 @@ void TelegramBot::Poll()
     }
 }
 
-} // namespace telegram_bot
+} // namespace telegrambot
