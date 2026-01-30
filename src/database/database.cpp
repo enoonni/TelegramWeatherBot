@@ -14,10 +14,7 @@ bool Database::Initialize(const std::string& path)
     sqlite::Sqlite sqlite;
 
     if (!sqlite.Open(this->path_))
-    {
-        sqlite.Close();
         return false;
-    }
 
     if (!sqlite.EnsureTable(this->user_table_name_, this->user_table_schema))
     {
@@ -65,7 +62,7 @@ void Database::AddUsers(std::vector<int64_t> users_id)
 
     std::string sql_request = "INSERT OR IGNORE INTO " + this->user_table_name_ + " (" + this->user_id_column_name_ + ") VALUES ";
 
-    for (size_t i = 0; i < users_id.size(); i++)
+    for (size_t i = 0; i < users_id.size(); ++i)
     {
         sql_request += ("(" + std::to_string(users_id[i]) + ")");
         if (i < users_id.size())

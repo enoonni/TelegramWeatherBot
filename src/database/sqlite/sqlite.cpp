@@ -16,7 +16,6 @@ bool Sqlite::Open(const std::string& path)
             sqlite3_close(this->db_);
             this->db_ = nullptr;
         }
-
         return false;
     }
 
