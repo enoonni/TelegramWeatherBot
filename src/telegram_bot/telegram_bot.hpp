@@ -9,6 +9,7 @@ class TelegramBot
   public:
     explicit TelegramBot(std::string token);
     void poll();
+    void sendMessage(std::string message, int64_t user_id);
 
   private:
     class TelegramClientApi;

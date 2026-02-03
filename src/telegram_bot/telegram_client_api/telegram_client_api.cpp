@@ -140,4 +140,25 @@ std::vector<telegrambot::dto::MessageContext> TelegramClientApi::Update(std::str
     return updates;
 }
 
+void TelegramClientApi::sendMessage(const std::string& token, int64_t user_id, const std::string& text)
+{
+    const std::string url = "https://api.telegram.org/bot" + token + "/sendMessage";
+
+    http::HttpClient client;
+
+    nlohmann::json payload{
+        {"chat_id", user_id},
+        {"text", text}};
+
+    auto response = client.post(url, payload.dump(), {{"Content-Type", "application/json"}, {"Accept", "application/json"}});
+
+    if (response.status != 200)
+        throw std::runtime_error("Telegram sendMessage HTTP error");
+
+    auto json = nlohmann::json::parse(response.body);
+
+    if (!json.contains("ok") || !json["ok"].get<bool>())
+        throw std::runtime_error("Telegram sendMessage returned ok=false");
+}
+
 }; // namespace telegrambot::telegramclientapi

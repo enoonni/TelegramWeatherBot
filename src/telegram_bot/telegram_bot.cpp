@@ -55,4 +55,15 @@ void TelegramBot::poll()
     }
 }
 
+void TelegramBot::sendMessage(std::string message, int64_t user_id)
+{
+    try
+    {
+        this->telegram_client_api_.sendMessage(this->token_, user_id, message);
+    }
+    catch (const std::exception&)
+    {
+    }
+}
+
 } // namespace telegrambot
