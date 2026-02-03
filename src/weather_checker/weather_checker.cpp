@@ -32,7 +32,6 @@ void WeatherChecker::poll()
         this->last_weather_ = "Temperature: " + std::to_string(temperature) + "°C, " + "Wind: " + std::to_string(wind) + " m/s";
     }
     catch (const std::exception&)
-
     {
     }
 }

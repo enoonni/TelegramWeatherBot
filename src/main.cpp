@@ -3,6 +3,7 @@
 #include "telegram_bot/telegram_bot.hpp"
 #include "telegram_bot/telegram_client_api/telegram_client_api.hpp"
 #include "utils/signal_handler.hpp"
+#include "utils/stopwatch/stopwatch.hpp"
 #include "weather_checker/weather_checker.hpp"
 
 #include <chrono>
@@ -27,6 +28,8 @@ int main(int argc, char* argv[])
     std::string config_path = "bot_config.json";
     config::Config bot_config(config_path);
     weatherchecker::WeatherChecker checker;
+    telegrambot::TelegramBot bot(bot_config.GetToken());
+    utils::stopwatch::Stopwatch stopwatch(std::chrono::hours(0));
 
     while (signal_handler.is_running())
     {
@@ -55,13 +58,25 @@ int main(int argc, char* argv[])
             {
                 while (signal_handler.is_running())
                 {
-                    checker.poll();
                 }
                 return 0;
             }
             break;
 
         case AppState::Ready:
+            bot.poll();
+            if (stopwatch.expired())
+            {
+                checker.poll();
+                auto current_weather = checker.get_weather();
+                auto users = db.get_users();
+                for (auto user : users)
+                {
+                    bot.sendMessage(current_weather, user);
+                }
+                stopwatch.reset();
+            }
+
             break;
 
         default:
