@@ -65,7 +65,7 @@ void Database::add_users(std::vector<int64_t> users_id)
     for (size_t i = 0; i < users_id.size(); ++i)
     {
         sql_request += ("(" + std::to_string(users_id[i]) + ")");
-        if (i < users_id.size())
+        if (i + 1 < users_id.size())
             sql_request += ",";
     }
     sql_request += ";";
