@@ -4,19 +4,22 @@
 
 namespace telegrambot
 {
+
 class TelegramBot
 {
   public:
-    explicit TelegramBot(std::string token);
+    explicit TelegramBot(const std::string token);
     void poll();
     void sendMessage(std::string message, int64_t user_id);
 
   private:
-    class TelegramClientApi;
     enum class TelegramBotState;
+    enum class TelegramMessageCommand;
     TelegramBotState state_;
     std::string token_;
     int64_t last_update_id_;
     telegramclientapi::TelegramClientApi telegram_client_api_;
+    TelegramBot::TelegramMessageCommand HandlingMessage(const std::string& message);
 };
+
 } // namespace telegrambot

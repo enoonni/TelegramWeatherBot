@@ -16,7 +16,10 @@ std::vector<telegrambot::dto::MessageContext> TelegramClientApi::Update(std::str
 
     auto response = client.get(url, {{"Accept", "application/json"}});
     if (response.status != 200)
+    {
+        int status = response.status;
         throw std::runtime_error("Telegram API error!");
+    }
 
     nlohmann::json json = nlohmann::json::parse(response.body);
 
