@@ -8,9 +8,8 @@
 namespace db
 {
 
-bool Database::initialize(const std::string& path)
+bool Database::initialize()
 {
-    this->path_ = path;
     sqlite::Sqlite sqlite;
 
     if (!sqlite.open(this->path_))
