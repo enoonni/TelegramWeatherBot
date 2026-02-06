@@ -45,7 +45,6 @@ void TelegramBot::poll()
         }
         catch (const std::exception&)
         {
-            std::cout << "\n Exception from telegram bot updates initialize\n";
         }
 
         break;
@@ -61,11 +60,9 @@ void TelegramBot::poll()
 
         if (!updates.empty())
         {
-            std::cout << "updates is not empty\n";
             this->last_update_id_ = updates[updates.size() - 1].update_id;
             for (const auto& update : updates)
             {
-                std::cout << update.text << "\n";
                 auto command = HandlingMessage(update.text);
                 switch (command)
                 {

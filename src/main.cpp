@@ -27,7 +27,8 @@ int main(int argc, char* argv[])
     weatherchecker::WeatherChecker checker;
     // telegrambot::TelegramBot bot(bot_config.GetToken());
     std::unique_ptr<telegrambot::TelegramBot> bot;
-    utils::stopwatch::Stopwatch stopwatch(std::chrono::minutes(3));
+    utils::stopwatch::Stopwatch stopwatch(std::chrono::hours(1));
+    utils::stopwatch::Stopwatch stopwatch_telegram_poll(std::chrono::seconds(10));
 
     // while (signal_handler.is_running())
     while (true)
@@ -64,7 +65,11 @@ int main(int argc, char* argv[])
             break;
 
         case AppState::Ready:
-            bot->poll();
+            if (stopwatch_telegram_poll.expired())
+            {
+                bot->poll();
+                stopwatch_telegram_poll.reset();
+            }
             if (stopwatch.expired())
             {
                 checker.poll();
