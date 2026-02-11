@@ -13,7 +13,7 @@ class Database
     std::vector<int64_t> get_users();
 
   private:
-    const std::string path_ = "telegram.db";
+    const std::string path_ = "/var/lib/telegram-weather-bot/users.db";
     const std::string user_table_name_ = "telegram_users";
     const std::string user_id_column_name_ = "user_id";
     const std::string user_table_schema = "id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER UNIQUE NOT NULL";

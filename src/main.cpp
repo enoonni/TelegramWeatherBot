@@ -1,13 +1,14 @@
 #include "config/config.hpp"
 #include "database/database.hpp"
 #include "telegram_bot/telegram_bot.hpp"
-// #include "utils/signal_handler.hpp"
+#include "utils/signal_handler.hpp"
 #include "utils/stopwatch/stopwatch.hpp"
 #include "weather_checker/weather_checker.hpp"
 
 #include <chrono>
-// #include <iostream>
+#include <iostream>
 #include <memory>
+#include <thread>
 
 enum class AppState
 {
@@ -19,19 +20,17 @@ enum class AppState
 
 int main(int argc, char* argv[])
 {
-    // utils::SignalHandler signal_handler;
+    utils::SignalHandler signal_handler;
     AppState app_state = AppState::ReadConfigPath;
     db::Database db;
-    std::string config_path = "bot_config.json";
+    std::string config_path = "/etc/telegram-weather-bot/bot_config.json";
     config::Config bot_config(config_path);
     weatherchecker::WeatherChecker checker;
-    // telegrambot::TelegramBot bot(bot_config.GetToken());
     std::unique_ptr<telegrambot::TelegramBot> bot;
     utils::stopwatch::Stopwatch stopwatch(std::chrono::hours(1));
     utils::stopwatch::Stopwatch stopwatch_telegram_poll(std::chrono::seconds(10));
 
-    // while (signal_handler.is_running())
-    while (true)
+    while (signal_handler.is_running())
     {
         switch (app_state)
         {
@@ -43,8 +42,11 @@ int main(int argc, char* argv[])
             }
             else
             {
-                // while (signal_handler.is_running())
+                std::cerr << "Error: Config could not be loaded. Entering idle state...\n";
+
+                while (signal_handler.is_running())
                 {
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
                 }
                 return 0;
             }
@@ -57,8 +59,10 @@ int main(int argc, char* argv[])
             }
             else
             {
-                // while (signal_handler.is_running())
+                std::cerr << "Error: Database initialization failed. Entering idle state...\n";
+                while (signal_handler.is_running())
                 {
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
                 }
                 return 0;
             }
@@ -70,7 +74,7 @@ int main(int argc, char* argv[])
                 bot->poll();
                 stopwatch_telegram_poll.reset();
             }
-            if (stopwatch.expired())
+            else if (stopwatch.expired())
             {
                 checker.poll();
                 auto current_weather = checker.get_weather();
@@ -80,6 +84,10 @@ int main(int argc, char* argv[])
                     bot->sendMessage(current_weather, user);
                 }
                 stopwatch.reset();
+            }
+            else
+            {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
 
             break;

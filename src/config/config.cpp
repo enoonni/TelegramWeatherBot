@@ -1,6 +1,5 @@
 #include "config.hpp"
 #include <fstream>
-#include <iostream>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json_fwd.hpp>
 #include <string>
@@ -18,7 +17,6 @@ bool Config::load()
     std::ifstream file(this->path_);
     if (!file.is_open())
     {
-        std::cout << "File is not open\n";
         return false;
     }
 
