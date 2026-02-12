@@ -14,14 +14,15 @@ Config::Config(const std::string& path)
 
 bool Config::load()
 {
-    std::ifstream file(this->path_);
-    if (!file.is_open())
-    {
-        return false;
-    }
 
     try
     {
+        std::ifstream file(this->path_);
+        if (!file.is_open())
+        {
+            return false;
+        }
+
         nlohmann::json json_file;
         file >> json_file;
 
@@ -34,14 +35,14 @@ bool Config::load()
             this->token_.clear();
             return false;
         }
+
+        return true;
     }
     catch (const std::exception& e)
     {
         this->token_.clear();
         return false;
     }
-
-    return true;
 }
 
 const std::string& Config::GetToken() const

@@ -1,6 +1,9 @@
 #include "telegram_bot.hpp"
 #include "database/database.hpp"
+
+#include <chrono>
 #include <iostream>
+#include <thread>
 
 namespace telegrambot
 {
@@ -43,8 +46,10 @@ void TelegramBot::poll()
             }
             this->state_ = TelegramBotState::Processing;
         }
-        catch (const std::exception&)
+        catch (const std::exception& e)
         {
+            std::cerr << "Polling error: " << e.what() << "\n";
+            std::this_thread::sleep_for(std::chrono::minutes(1));
         }
 
         break;
@@ -52,50 +57,58 @@ void TelegramBot::poll()
 
     case TelegramBotState::Processing:
     {
-        std::vector<telegrambot::dto::MessageContext> updates;
-        if (this->last_update_id_ != 0)
-            updates = this->telegram_client_api_.Update(this->token_, this->last_update_id_ + 1);
-        else
-            updates = this->telegram_client_api_.Update(this->token_);
-
-        if (!updates.empty())
+        try
         {
-            this->last_update_id_ = updates[updates.size() - 1].update_id;
-            for (const auto& update : updates)
-            {
-                auto command = HandlingMessage(update.text);
-                switch (command)
-                {
-                case TelegramBot::TelegramMessageCommand::Registration:
-                {
-                    bool is_new_user = true;
-                    db::Database db;
-                    auto users = db.get_users();
-                    for (auto user : users)
-                    {
-                        if (user == update.from.id)
-                        {
-                            is_new_user = false;
-                            break;
-                        }
-                    }
-                    if (users.size() < 10 && is_new_user)
-                    {
-                        sendMessage("You has been saved", update.from.id);
-                        db.add_user(update.from.id);
-                    }
-                    else
-                    {
-                        if (!is_new_user)
-                            sendMessage("You was registered", update.from.id);
-                    }
-                    break;
-                }
+            std::vector<telegrambot::dto::MessageContext> updates;
+            if (this->last_update_id_ != 0)
+                updates = this->telegram_client_api_.Update(this->token_, this->last_update_id_ + 1);
+            else
+                updates = this->telegram_client_api_.Update(this->token_);
 
-                default:
-                    break;
+            if (!updates.empty())
+            {
+                this->last_update_id_ = updates[updates.size() - 1].update_id;
+                for (const auto& update : updates)
+                {
+                    auto command = HandlingMessage(update.text);
+                    switch (command)
+                    {
+                    case TelegramBot::TelegramMessageCommand::Registration:
+                    {
+                        bool is_new_user = true;
+                        db::Database db;
+                        auto users = db.get_users();
+                        for (auto user : users)
+                        {
+                            if (user == update.from.id)
+                            {
+                                is_new_user = false;
+                                break;
+                            }
+                        }
+                        if (users.size() < 10 && is_new_user)
+                        {
+                            sendMessage("You has been saved", update.from.id);
+                            db.add_user(update.from.id);
+                        }
+                        else
+                        {
+                            if (!is_new_user)
+                                sendMessage("You was registered", update.from.id);
+                        }
+                        break;
+                    }
+
+                    default:
+                        break;
+                    }
                 }
             }
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << "Polling error: " << e.what() << "\n";
+            std::this_thread::sleep_for(std::chrono::minutes(1));
         }
         break;
     }

@@ -1,6 +1,7 @@
 #include "database.hpp"
 #include "sqlite/sqlite.hpp"
 #include <cstdint>
+#include <iostream>
 #include <sqlite3.h>
 #include <string>
 #include <vector>
@@ -10,27 +11,35 @@ namespace db
 
 bool Database::initialize()
 {
-    sqlite::Sqlite sqlite;
-
-    if (!sqlite.open(this->path_))
-        return false;
-
-    if (!sqlite.ensure_table(this->user_table_name_, this->user_table_schema))
+    try
     {
-        sqlite.close();
-        return false;
-    }
+        sqlite::Sqlite sqlite;
 
-    if (!sqlite.has_column(this->user_table_name_, this->user_id_column_name_))
-    {
-        if (!sqlite.add_column(this->user_table_name_, this->user_id_column_name_ + " INTEGER NOT NULL UNIQUE"))
+        if (!sqlite.open(this->path_))
+            return false;
+
+        if (!sqlite.ensure_table(this->user_table_name_, this->user_table_schema))
         {
             sqlite.close();
             return false;
         }
+
+        if (!sqlite.has_column(this->user_table_name_, this->user_id_column_name_))
+        {
+            if (!sqlite.add_column(this->user_table_name_, this->user_id_column_name_ + " INTEGER NOT NULL UNIQUE"))
+            {
+                sqlite.close();
+                return false;
+            }
+        }
+        sqlite.close();
+        return true;
     }
-    sqlite.close();
-    return true;
+    catch (const std::exception& e)
+    {
+        std::cerr << "Database init error: " << e.what() << "\n";
+        return false;
+    }
 }
 
 void Database::add_user(int64_t user_id)
