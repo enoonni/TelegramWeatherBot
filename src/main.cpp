@@ -20,7 +20,6 @@ enum class AppState
 
 int main(int argc, char* argv[])
 {
-    utils::SignalHandler signal_handler;
     AppState app_state = AppState::ReadConfigPath;
     db::Database db;
     std::string config_path = "/etc/telegram-weather-bot/bot_config.json";
@@ -29,8 +28,9 @@ int main(int argc, char* argv[])
     std::unique_ptr<telegrambot::TelegramBot> bot;
     utils::stopwatch::Stopwatch stopwatch(std::chrono::hours(1));
     utils::stopwatch::Stopwatch stopwatch_telegram_poll(std::chrono::seconds(10));
+    utils::SignalHandler::setup();
 
-    while (signal_handler.is_running())
+    while (utils::SignalHandler::is_running())
     {
         switch (app_state)
         {
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
             {
                 std::cerr << "Error: Config could not be loaded. Entering idle state...\n";
 
-                while (signal_handler.is_running())
+                while (utils::SignalHandler::is_running())
                 {
                     std::this_thread::sleep_for(std::chrono::seconds(1));
                 }
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
             else
             {
                 std::cerr << "Error: Database initialization failed. Entering idle state...\n";
-                while (signal_handler.is_running())
+                while (utils::SignalHandler::is_running())
                 {
                     std::this_thread::sleep_for(std::chrono::seconds(1));
                 }
